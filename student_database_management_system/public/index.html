@@ -1,0 +1,292 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>StudentHub | Student Database Management System</title>
+
+    <meta
+        name="description"
+        content="Manage student information, search records, update student details, and export records to CSV or Excel."
+    >
+
+    <link rel="stylesheet" href="style.css">
+    <script src="app.js" defer></script>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="topbar">
+        <div class="brand">
+            <div class="brand-icon">S</div>
+
+            <div>
+                <h1>StudentHub</h1>
+                <p>STUDENT MANAGEMENT PORTAL</p>
+            </div>
+        </div>
+
+        <a class="primary-button" href="#studentForm">
+            + Add Student
+        </a>
+    </header>
+
+    <main class="container">
+
+        <!-- Dashboard introduction -->
+        <section class="welcome">
+            <p class="eyebrow">OVERVIEW</p>
+
+            <h2>Student Dashboard</h2>
+
+            <p>
+                Manage student information, validate details, search records,
+                and export your student database.
+            </p>
+        </section>
+
+        <!-- Dashboard statistics -->
+        <section class="stats-grid" aria-label="Student statistics">
+
+            <article class="stat-card">
+                <span>Total Students</span>
+                <strong id="totalStudents">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Total Courses</span>
+                <strong id="totalCourses">0</strong>
+            </article>
+
+            <article class="stat-card">
+                <span>Database</span>
+                <strong class="connected">Connected</strong>
+            </article>
+
+        </section>
+
+        <!-- Main content -->
+        <section class="content-grid">
+
+            <!-- Add and update student form -->
+            <article class="panel" id="studentFormPanel">
+
+                <p class="eyebrow">STUDENT DETAILS</p>
+
+                <h2 id="formTitle">Add New Student</h2>
+
+                <p class="muted">
+                    Enter the student's information below.
+                    Fields marked with * are required.
+                </p>
+
+                <form id="studentForm" novalidate>
+
+                    <!-- Used when editing an existing student -->
+                    <input
+                        type="hidden"
+                        id="studentId"
+                        name="studentId"
+                    >
+
+                    <label for="name">Full Name *</label>
+
+                    <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        maxlength="100"
+                        autocomplete="name"
+                        placeholder="Enter full name"
+                        aria-describedby="nameHelp"
+                        required
+                    >
+
+                    <label for="email">Email Address *</label>
+
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        maxlength="150"
+                        autocomplete="email"
+                        placeholder="student@example.com"
+                        required
+                    >
+
+                    <div class="form-row">
+
+                        <div>
+                            <label for="course">Course *</label>
+
+                            <input
+                                type="text"
+                                id="course"
+                                name="course"
+                                maxlength="100"
+                                placeholder="e.g. BCA"
+                                required
+                            >
+                        </div>
+
+                        <div>
+                            <label for="age">Age *</label>
+
+                            <input
+                                type="number"
+                                id="age"
+                                name="age"
+                                min="1"
+                                max="120"
+                                step="1"
+                                placeholder="e.g. 20"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+                    <label for="phone">Phone Number</label>
+
+                    <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        maxlength="20"
+                        autocomplete="tel"
+                        placeholder="Enter phone number"
+                    >
+
+                    <!-- Success and error messages are shown here -->
+                    <div
+                        id="message"
+                        class="message hidden"
+                        role="status"
+                        aria-live="polite"
+                    ></div>
+
+                    <div class="form-actions">
+
+                        <button
+                            type="submit"
+                            id="saveButton"
+                            class="primary-button"
+                        >
+                            + Save Student
+                        </button>
+
+                        <button
+                            type="button"
+                            id="cancelEdit"
+                            class="secondary-button hidden"
+                        >
+                            Cancel
+                        </button>
+
+                    </div>
+
+                </form>
+            </article>
+
+            <!-- Student records section -->
+            <article class="panel records-panel" id="records">
+
+                <div class="records-heading">
+
+                    <div>
+                        <p class="eyebrow">YOUR DATABASE</p>
+                        <h2>Student Records</h2>
+                    </div>
+
+                    <span
+                        class="record-count"
+                        id="recordCount"
+                        aria-live="polite"
+                    >
+                        0 records
+                    </span>
+
+                </div>
+
+                <!-- Search and export actions -->
+                <div class="toolbar">
+
+                    <input
+                        type="search"
+                        id="searchInput"
+                        placeholder="Search students..."
+                        aria-label="Search students by name, email, course, age or phone"
+                    >
+
+                    <button
+                        type="button"
+                        id="exportCsvButton"
+                        class="export-button csv-button"
+                    >
+                        ↓ Export CSV
+                    </button>
+
+                    <button
+                        type="button"
+                        id="exportExcelButton"
+                        class="export-button excel-button"
+                    >
+                        ↓ Export Excel
+                    </button>
+
+                    <button
+                        type="button"
+                        id="dropTableButton"
+                        class="danger-button"
+                    >
+                        Reset Table
+                    </button>
+
+                </div>
+
+                <!-- Student records table -->
+                <div class="table-wrap">
+
+                    <table>
+                        <thead>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">STUDENT</th>
+                                <th scope="col">COURSE</th>
+                                <th scope="col">AGE</th>
+                                <th scope="col">PHONE</th>
+                                <th scope="col">ACTIONS</th>
+                            </tr>
+                        </thead>
+
+                        <tbody id="studentsTableBody">
+                            <tr>
+                                <td colspan="6" class="empty-state">
+                                    Loading student records...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+                <!-- Record count footer -->
+                <div class="table-footer">
+                    <span>Student database</span>
+                    <span id="footerCount">0 students</span>
+                </div>
+
+            </article>
+
+        </section>
+
+        <!-- Footer -->
+        <footer>
+            StudentHub · Node.js · Express · MySQL
+        </footer>
+
+    </main>
+</body>
+</html>
